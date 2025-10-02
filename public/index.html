@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIGIDES - Digital Desa Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>DIGIDES Login</h3>
+                        <p>Platform Pengelolaan Desa Lengkap</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </form>
+                        <div id="loginMessage" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dashboard (hidden after login) -->
+        <div id="dashboard" class="row mt-5" style="display: none;">
+            <div class="col-12">
+                <h2>Selamat Datang di DIGIDES</h2>
+                <p>Solusi lengkap untuk pengelolaan desa: administrasi, persuratan, pajak PBB-P2, bansos, dan profil desa.</p>
+                <div class="row">
+                    <div class="col-md-4"><a href="/admin" class="btn btn-info w-100 mb-2">Administrasi</a></div>
+                    <div class="col-md-4"><a href="/surat" class="btn btn-success w-100 mb-2">Persuratan</a></div>
+                    <div class="col-md-4"><a href="/pajak" class="btn btn-warning w-100 mb-2">Pajak PBB-P2</a></div>
+                    <div class="col-md-4"><a href="/bansos" class="btn btn-secondary w-100 mb-2">Manajemen Bansos</a></div>
+                    <div class="col-md-4"><a href="/profil" class="btn btn-primary w-100 mb-2">Profil Desa</a></div>
+                    <div class="col-md-4"><button id="logout" class="btn btn-danger w-100 mb-2">Logout</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await response.json();
+            const messageEl = document.getElementById('loginMessage');
+            if (data.success) {
+                messageEl.innerHTML = '<div class="alert alert-success">Login berhasil!</div>';
+                document.querySelector('.card').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+            } else {
+                messageEl.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
+            }
+        });
+
+        // Logout
+        document.getElementById('logout').addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html>
